@@ -107,37 +107,55 @@ namespace DataStructures
 					s = s->right;
 				}
 				p->data = s->data;
+				auto tmp = p->parent;
 				p = s;
+				p->parent = tmp;
 				pp = ps;
 			}
 			AATreeNode<T>* c;
 			if (p->left) c = p->left;
 			else c = p->right;
 			// delete p
-			if (p == root) root = c;
+			if (p == root)
+			{
+				root = c;
+				if(root != nullptr)
+					root->parent = nullptr;
+			}
 			else {// is p left or right child of pp?
 				if (p == pp->left)
+				{
+					auto tmp = pp->left->parent;
 					pp->left = c;
-				else pp->right = c;
+					if(pp->left != nullptr)
+						pp->left->parent = tmp;
+				}
+				else
+				{
+					auto tmp = pp->right->parent;
+					pp->right = c;
+					if(pp->right != nullptr)
+						pp->right->parent = tmp;
+				}
 			}
 
 			// rebalance tree
 			auto rb = p->parent;
-
-			while (rb != nullptr)
-			{
+			while (rb != nullptr){
 				// check if we need to decrease level
 				if (rb->left == nullptr && rb->level >= 2)
 					rb->level--;
-				else if(rb->right == nullptr && rb->level >= 2)
+				else if (rb->right == nullptr && rb->level >= 2)
 					rb->level--;
-				else if ((rb->left != nullptr && rb->level - 1 > rb->left->level) || rb->right != nullptr && rb->level - 1 > rb->right->level)
+				else if (rb->left != nullptr && rb->level - 1 > rb->left->level)
+					rb->level--;
+				else if (rb->right != nullptr && rb->level - 1 > rb->right->level)
 					rb->level--;
 				Skew(rb);
 				Split(rb);
 				rb = rb->parent;
 			}
-			delete p;
+			//delete p;
 			return true;
 		}
 		/// <summary>

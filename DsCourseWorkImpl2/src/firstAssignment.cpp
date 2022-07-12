@@ -6,7 +6,7 @@
 using namespace DataStructures;
 
 int main()
-{  
+{
     auto* aa = new AATree<int>();
     aa->Insert(10);
     aa->Insert(7);
@@ -21,20 +21,14 @@ int main()
     aa->Insert(-1);
     aa->Insert(-2);
 
+    aa->Delete(10);
     aa->Delete(7);
     aa->Delete(5);
-    aa->Delete(543);
     aa->Delete(3);
+    aa->Delete(1);
+    aa->Delete(34);
     aa->Delete(-1);
-    aa->Delete(-2);
-    aa->Delete(10);
+    aa->Delete(1);
 
     aa->preOrderPrint(aa->getRoot());
-    
-    /*std::cout << aa->getRoot()->left->data << std::endl;
-    std::cout << aa->getRoot()->data << std::endl;
-    std::cout << aa->getRoot()->right->data << std::endl;*/
-    //aa->preOrderPrint(aa->getRoot());
-
 }
-
