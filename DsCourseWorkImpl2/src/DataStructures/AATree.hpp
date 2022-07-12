@@ -2,12 +2,12 @@
 #include "AATreeNode.h"
 #include <iostream>
 
-namespace DataStructures 
+namespace DataStructures
 {
 	template <typename T>
-	class AATree 
+	class AATree
 	{
-	//private:
+		//private:
 		struct AATreeNode<T>* root = nullptr;
 		void Skew(struct AATreeNode<T>*& node)
 		{
@@ -25,9 +25,13 @@ namespace DataStructures
 				auto tmp = node->data;
 				auto tmp2 = node->left->right;
 				auto tmp3 = node->right;
+				auto tmp4 = node->left->level;
+
 				node->data = node->left->data;
 				node->left = node->left->left;
 				node->right = new struct AATreeNode<T>;
+				node->right->level = tmp4;
+
 				node->right->data = tmp;
 				node->right->left = tmp2;
 				node->right->right = tmp3;
@@ -45,6 +49,9 @@ namespace DataStructures
 				auto tmp3 = node->right->left;
 				auto tmp4 = node->data;
 				auto tmp5 = node->left;
+				auto tmp6 = node->level;
+
+				node->level += 1;
 
 				node->data = node->right->data;
 				node->parent = tmp1->parent;
@@ -54,14 +61,14 @@ namespace DataStructures
 				node->left->left = tmp5;
 				node->left->right = tmp3;
 				node->left->data = tmp4;
-				node->left->level = tmp1->level + 1;
+				node->left->level = tmp6;
 				// fix right child
 				node->right = new struct AATreeNode<T>;
 				node->right->parent = node;
 				node->right->left = tmp2->left;
 				node->right->right = tmp2->right;
 				node->right->data = tmp2->data;
-				node->right->level = tmp1->level + 1;
+				node->right->level = tmp6;
 
 				return true;
 			}
@@ -77,53 +84,61 @@ namespace DataStructures
 			// first check if the element actually exists in the tree
 			if (!Search(data))
 				return false;
+			
+			// remove element from tree
 			auto p = root;
-			struct AATreeNode<T>* pp = nullptr;
+			AATreeNode<T>* pp = nullptr;
 			while (p->data != data)
 			{
 				pp = p;
-				if (data > p->data)
-					p = p->right;
-				else
+				if (data < p->data)
 					p = p->left;
+				else
+					p = p->right;
 			}
-			auto deleted = p; // element that we deleted
 			if (p->left != nullptr && p->right != nullptr)
 			{
-				// find the largest left child
-				p = p->left;
-				while (p->right != nullptr)
+				// find largest element in left subtree
+				auto s = p->left;
+				auto ps = p;
+				while (s->right)
 				{
-					p = p->right;
+					ps = s;
+					s = s->right;
 				}
-				deleted->data = p->data;
-				p->parent->right = nullptr;
-				delete p->right;
+				p->data = s->data;
+				p = s;
+				pp = ps;
 			}
-			else if (p->left != nullptr )
-			{
-				p->data = p->left->data;
-				p->left = nullptr;
-				delete p->left;
+			AATreeNode<T>* c;
+			if (p->left) c = p->left;
+			else c = p->right;
+			// delete p
+			if (p == root) root = c;
+			else {// is p left or right child of pp?
+				if (p == pp->left)
+					pp->left = c;
+				else pp->right = c;
 			}
-			else if (p->right != nullptr)
-			{
-				p->data = p->right->data;
-				p->right = nullptr;
-				delete p->right;
-			}
-			else {
-				if (pp->left->data == p->data) {
-					pp->left = nullptr;
-					delete pp->left;
-				}
-				else {
-					pp->right = nullptr;
-					delete pp->right;
-				}
-			}
-			// need to rebalance tree
 
+			// rebalance tree
+			auto rb = p->parent;
+
+			while (rb != nullptr)
+			{
+				// check if we need to decrease level
+				if (rb->left == nullptr && rb->level >= 2)
+					rb->level--;
+				else if(rb->right == nullptr && rb->level >= 2)
+					rb->level--;
+				else if ((rb->left != nullptr && rb->level - 1 > rb->left->level) || rb->right != nullptr && rb->level - 1 > rb->right->level)
+					rb->level--;
+				Skew(rb);
+				Split(rb);
+				rb = rb->parent;
+			}
+			delete p;
+			return true;
 		}
 		/// <summary>
 		/// method for inserting an element at the AATree
@@ -185,7 +200,7 @@ namespace DataStructures
 		/// method for getting the currents Tree root
 		/// </summary>
 		/// <returns>returns the root of the tree</returns>
-		struct AATreeNode<T>*  getRoot() const
+		struct AATreeNode<T>* getRoot() const
 		{
 			return root;
 		}

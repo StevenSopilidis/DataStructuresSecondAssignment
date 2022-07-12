@@ -11,13 +11,26 @@ int main()
     aa->Insert(10);
     aa->Insert(7);
     aa->Insert(5);
-    aa->Insert(2);
+    aa->Insert(3);
     aa->Insert(1);
 
-    ////std::cout << aa->Search(2) << std::endl;
-    std::cout << "---------------------" << std::endl;
-    aa->preOrderPrint(aa->getRoot());
+    aa->Insert(34);
+    aa->Insert(543);
+    aa->Insert(32);
+    aa->Insert(0);
+    aa->Insert(-1);
+    aa->Insert(-2);
 
+    aa->Delete(7);
+    aa->Delete(5);
+    aa->Delete(543);
+    aa->Delete(3);
+    aa->Delete(-1);
+    aa->Delete(-2);
+    aa->Delete(10);
+
+    aa->preOrderPrint(aa->getRoot());
+    
     /*std::cout << aa->getRoot()->left->data << std::endl;
     std::cout << aa->getRoot()->data << std::endl;
     std::cout << aa->getRoot()->right->data << std::endl;*/
