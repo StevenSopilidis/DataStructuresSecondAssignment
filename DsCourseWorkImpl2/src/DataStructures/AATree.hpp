@@ -119,25 +119,26 @@ namespace DataStructures
 			if (p == root)
 			{
 				root = c;
-				if(root != nullptr)
+				if (root != nullptr)
 					root->parent = nullptr;
 			}
-			else {// is p left or right child of pp?
+			else { // is p left or right child of pp?
 				if (p == pp->left)
 				{
-					auto tmp = pp->left->parent;
+					//auto tmp = pp->left->parent;
 					pp->left = c;
-					if(pp->left != nullptr)
-						pp->left->parent = tmp;
+					if (pp->left != nullptr)
+						pp->left->parent = pp;
 				}
 				else
 				{
-					auto tmp = pp->right->parent;
+					//auto tmp = pp->right->parent;
 					pp->right = c;
-					if(pp->right != nullptr)
-						pp->right->parent = tmp;
+					if (pp->right != nullptr)
+						pp->right->parent = pp;
 				}
 			}
+			
 
 			// rebalance tree
 			auto rb = p->parent;

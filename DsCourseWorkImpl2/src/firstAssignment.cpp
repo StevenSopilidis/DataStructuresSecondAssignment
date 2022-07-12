@@ -23,12 +23,15 @@ int main()
 
     aa->Delete(10);
     aa->Delete(7);
+    aa->Delete(543);
     aa->Delete(5);
     aa->Delete(3);
     aa->Delete(1);
-    aa->Delete(34);
-    aa->Delete(-1);
-    aa->Delete(1);
+
+    aa->Insert(423);
+    aa->Insert(54356364);
+
+    auto tmp = aa->getRoot();
 
     aa->preOrderPrint(aa->getRoot());
 }
